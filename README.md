@@ -1,48 +1,60 @@
 # Stylized Retrieval-Augmented Generation (RAG)
 
-This personal project implements a **Retrieval-Augmented Generation (RAG)** pipeline tailored for **text style transfer**. The goal is to augment the generation process with relevant retrieved content while adapting the output to a specific writing style.
+This personal project implements a **Retrieval-Augmented Generation (RAG)** pipeline designed for **text style transfer**, with a strong emphasis on modularity, stylistic control, and enhanced retrieval using an ensemble approach.
 
 ## 🎯 Project Objective
 
-Build an intelligent pipeline that:
-- Retrieves relevant documents based on user input.
-- Uses these documents to guide text generation.
-- Applies a **style transfer** mechanism to convert the generated output into a desired tone or literary style.
+To generate contextually relevant and stylistically tailored responses by:
+- Integrating multiple retrieval strategies.
+- Leveraging a powerful instruction-tuned LLM.
+- Structuring prompt input with precision.
+- Dynamically fetching and parsing relevant web content.
 
 ## 🧠 Key Features
 
-- **RAG Architecture**: Combines retrieval and generation for improved contextual relevance.
-- **Style Transfer**: Adjusts the tone and writing style of the generated output to fit a chosen literary or stylistic domain.
-- **Modular Implementation**: Easy to plug in different retrievers, models, and style transfer techniques.
-
-## 🔧 Technologies Used
-
-- Python
-- Jupyter Notebook
-- Hugging Face Transformers
-- FAISS (Facebook AI Similarity Search)
-- SentenceTransformers / SBERT
-- Language Models (e.g., GPT, BART, etc.)
+- **Ensemble Retriever**: Combines dense and sparse retrieval methods:
+  - **Chroma (vector-based)** for semantic similarity.
+  - **BM25** for keyword-based relevance.
+- **Large Language Model**: Uses [`mistralai/Mistral-7B-Instruct-v0.3`](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) for high-quality, instruction-following generation.
+- **Prompt Engineering**: Uses `PromptTemplate` to format retrieved documents for optimal input to the LLM.
+- **Web Scraping and Parsing**: Uses `BeautifulSoup` (BS) to fetch and clean online content to populate the retrieval index.
 
 ## 🧪 Pipeline Overview
 
-1. **Text Embedding & Indexing**: Input documents are encoded and indexed for fast retrieval.
-2. **Query Handling**: User input is embedded and matched against the indexed data.
-3. **Retrieval Step**: Top-k relevant documents are fetched.
-4. **Stylized Generation**: Retrieved context is passed to a language model that outputs a stylized response.
+1. **Web Data Collection**: Dynamically scrapes relevant text data using BeautifulSoup.
+2. **Index Construction**: Documents are embedded and stored in a Chroma DB, with BM25-based indexing for sparse retrieval.
+3. **Query Handling**:
+   - Query is passed through both retrievers.
+   - Results are merged into a unified context.
+4. **Prompt Formatting**:
+   - Retrieved documents are inserted into a structured prompt using `PromptTemplate`.
+5. **Stylized Generation**:
+   - The prompt is passed to `Mistral-7B-Instruct`, which returns a response tailored to the desired writing style.
 
-## 🚀 How to Run
+## 🔧 Technologies Used
 
-1. Clone this repo and install the required libraries.
-2. Prepare a dataset of source texts for retrieval.
-3. Customize the generation and style transfer settings in the notebook.
-4. Run the pipeline and enjoy stylized, context-aware outputs.
+- **LLM**: `mistralai/Mistral-7B-Instruct-v0.3`
+- **Retrievers**: Chroma (dense), BM25 (sparse)
+- **Prompting**: `PromptTemplate` from LangChain
+- **Web Scraping**: `BeautifulSoup`
+- **Indexing**: FAISS / Chroma
+- **Frameworks**: Python, Jupyter Notebook, LangChain, Hugging Face Transformers
 
-## 💡 Future Improvements
+## 🚀 How to Use
 
-- Support for multiple style presets (e.g., academic, casual, poetic)
-- Fine-tuning on specific styles
-- Interactive web demo with Gradio or Streamlit
+1. Clone this repo and install dependencies:
+   ```bash
+   pip install langchain chromadb beautifulsoup4
+   ```
+2. Run the notebook `STYLIZED_RAG.ipynb`.
+3. Input your query and desired style.
+4. Review the stylized response generated using retrieved documents.
+
+## 💡 Future Work
+
+- Add multi-style support and presets (e.g., Shakespearean, News, Twitter-style).
+- Integrate with a UI for interactive exploration.
+- Evaluate generation quality and relevance with metrics like BLEU and ROUGE.
 
 ## 📄 License
 
